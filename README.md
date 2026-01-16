@@ -1,4 +1,3 @@
-
 # ⚔️ Batalha de Algoritmos
 > Atualizado em: 16/01/2026 02:18
 
