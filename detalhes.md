@@ -13,3 +13,10 @@
 
 ---
 
+## Amigo (Total: 1)
+| Problema | Tempo |
+| :--- | :---: |
+| 10055 - Hashmat the Brave Warrior | 80.000s |
+
+---
+
