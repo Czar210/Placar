@@ -165,7 +165,8 @@ tabela_dados.sort(key=lambda x: x["qtd"], reverse=True)
 
 data_hoje = datetime.datetime.now().strftime("%d/%m/%Y %H:%M")
 conteudo_readme = f"""
-# # Bruxo dos Dados vs Gênio da Lampada qual a verdadeira besta sagrada mecanica enjaulada da programação?
+## O Bruxo dos Dados vs O Gênio da Lampada da programação
+## qual a verdadeira besta sagrada mecanica enjaulada da programação?
 > Atualizado em: {data_hoje}
 
 | Rank | Nome | Resolvidos | Tempo Médio |
