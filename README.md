@@ -1,6 +1,7 @@
 
-# # Bruxo dos Dados vs Gênio da Lampada qual a verdadeira besta sagrada mecanica enjaulada da programação?
-> Atualizado em: 16/01/2026 12:58
+## O Bruxo dos Dados vs O Gênio da Lampada da programação
+## qual a verdadeira besta sagrada mecanica enjaulada da programação?
+> Atualizado em: 16/01/2026 18:41
 
 | Rank | Nome | Resolvidos | Tempo Médio |
 | :---: | :--- | :---: | :---: |
