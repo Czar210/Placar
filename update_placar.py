@@ -7,8 +7,8 @@ import re
 # --- CONFIGURAÇÃO ---
 # Coloca o ID e o Nome EXATO da pasta onde queres salvar os arquivos
 JOGADORES = [
-    {"nome": "Eu", "id": 339, "pasta": "Gabriel"},    # Ajusta o ID e a pasta
-    {"nome": "Amigo", "id": 460, "pasta": "Amigo"}    # Ajusta o ID e a pasta
+    {"nome": "Zaras", "id": 0, "pasta": "Czar210"},    # Ajusta o ID e a pasta
+    {"nome": "Amigo", "id": 1, "pasta": "devdebdeb"}    # Ajusta o ID e a pasta
 ]
 
 URL_PROBLEMAS = "https://uhunt.onlinejudge.org/api/p"
