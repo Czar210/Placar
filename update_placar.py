@@ -7,8 +7,8 @@ import re
 # --- CONFIGURAÇÃO ---
 # Coloca o ID e o Nome EXATO da pasta onde queres salvar os arquivos
 JOGADORES = [
-    {"nome": "Zaras", "id": 0, "pasta": "Czar210"},    # Ajusta o ID e a pasta
-    {"nome": "Amigo", "id": 1, "pasta": "devdebdeb"}    # Ajusta o ID e a pasta
+    {"nome": "Zaras", "id": 1419969, "pasta": "Czar210"},    # Exemplo: ID 1419969 (Czar210)
+    #{"nome": "Amigo", "id": 88123, "pasta": "Amigo"}     # Não te esqueças de pôr o ID real do amigo
 ]
 
 URL_PROBLEMAS = "https://uhunt.onlinejudge.org/api/p"
@@ -19,7 +19,7 @@ LANG_MAP = {
     1: '.c', 2: '.java', 3: '.cpp', 4: '.pas', 5: '.cpp', 6: '.py'
 }
 
-# Template do conteúdo do arquivo (O cabeçalho que pediste)
+# Template do conteúdo do arquivo
 TEMPLATE = """/*
  * Nome do Problema: {titulo}
  * ID: {id}
@@ -33,7 +33,6 @@ TEMPLATE = """/*
 
 def limpar_nome(nome):
     """Remove caracteres estranhos para criar um nome de arquivo seguro."""
-    # Substitui espaços por _ e remove caracteres não alfanuméricos
     limpo = re.sub(r'[^\w\s-]', '', nome)
     return re.sub(r'[-\s]+', '_', limpo).strip()
 
@@ -50,7 +49,10 @@ def carregar_mapa_problemas():
 def criar_arquivo_codigo(jogador_pasta, prob_dados, lang_id):
     """Cria o arquivo vazio se ele não existir."""
     if not os.path.exists(jogador_pasta):
-        os.makedirs(jogador_pasta) # Cria a pasta do jogador se não existir
+        try:
+            os.makedirs(jogador_pasta)
+        except FileExistsError:
+            pass # Pasta já existe, tudo bem
 
     extensao = LANG_MAP.get(lang_id, '.txt')
     nome_seguro = limpar_nome(prob_dados['titulo'])
@@ -59,23 +61,34 @@ def criar_arquivo_codigo(jogador_pasta, prob_dados, lang_id):
     nome_arquivo = f"{prob_dados['num']}-{nome_seguro}{extensao}"
     caminho_completo = os.path.join(jogador_pasta, nome_arquivo)
 
-    # Só cria se NÃO existir (para não apagar o que vocês já fizeram)
+    # Só cria se NÃO existir
     if not os.path.exists(caminho_completo):
         print(f"⚡ Criando arquivo novo: {nome_arquivo}")
         with open(caminho_completo, "w", encoding="utf-8") as f:
             conteudo = TEMPLATE.format(
                 titulo=prob_dados['titulo'], 
                 id=prob_dados['num'],
-                prob_index=prob_dados.get('id_interno', 0) # fallback
+                prob_index=prob_dados.get('id_interno', 0)
             )
             f.write(conteudo)
         return True
     return False
 
 def buscar_usuario(jogador, mapa_problemas):
-    print(f"Buscando dados de: {jogador['nome']}...")
-    resp = requests.get(URL_SUBS_USER.format(jogador['id']))
-    subs = resp.json()
+    print(f"Buscando dados de: {jogador['nome']} (ID: {jogador['id']})...")
+    
+    try:
+        resp = requests.get(URL_SUBS_USER.format(jogador['id']))
+        dados_api = resp.json()
+    except Exception as e:
+        print(f"Erro ao acessar API para {jogador['nome']}: {e}")
+        return {"qtd": 0, "media": "0.000s", "lista": []}
+
+    # --- CORREÇÃO AQUI ---
+    # A API devolve um dicionário {"name": "...", "subs": [...]}.
+    # Nós queremos apenas a lista que está dentro da chave "subs".
+    subs = dados_api.get("subs", [])
+    # ---------------------
     
     resolvidos_set = set()
     lista_detalhada = []
@@ -83,20 +96,21 @@ def buscar_usuario(jogador, mapa_problemas):
     novos_arquivos = 0
     
     # Ordenar por data (mais recente primeiro)
+    # Agora sim 'subs' é uma lista e tem o método .sort()
     subs.sort(key=lambda x: x[4], reverse=True) 
 
     for sub in subs:
         prob_id = sub[1]
         verdict = sub[2]
         tempo = sub[3]
-        lang_id = sub[5] # ID da linguagem usada
+        lang_id = sub[5] 
         
         if verdict == 90: # Accepted
             if prob_id not in resolvidos_set:
                 resolvidos_set.add(prob_id)
                 
                 info_prob = mapa_problemas.get(prob_id, {"num": 0, "titulo": "Desconhecido"})
-                info_prob['id_interno'] = prob_id # Guardar ID interno para URL
+                info_prob['id_interno'] = prob_id 
 
                 # Tenta criar o arquivo na pasta do jogador
                 if criar_arquivo_codigo(jogador['pasta'], info_prob, lang_id):
@@ -113,7 +127,7 @@ def buscar_usuario(jogador, mapa_problemas):
     qtd = len(resolvidos_set)
     media = (tempo_total / qtd) if qtd > 0 else 0.0
     
-    print(f"  -> {novos_arquivos} novos arquivos de código criados.")
+    print(f"  -> {novos_arquivos} novos arquivos criados.")
 
     return {
         "qtd": qtd,
