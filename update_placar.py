@@ -7,7 +7,7 @@ import re
 # --- CONFIGURAÇÃO ---
 # Coloca o ID e o Nome EXATO da pasta onde queres salvar os arquivos
 JOGADORES = [
-    {"nome": "Zaras", "id": 1419969, "pasta": "Czar210"},    # Exemplo: ID 1419969 (Czar210)
+    {"nome": "Zaras", "id": 1613893, "pasta": "Czar210"},    # Exemplo: ID 1419969 (Czar210)
     #{"nome": "Amigo", "id": 88123, "pasta": "Amigo"}     # Não te esqueças de pôr o ID real do amigo
 ]
 
